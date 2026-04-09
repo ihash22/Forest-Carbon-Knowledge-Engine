@@ -1,0 +1,22 @@
+# Use a slim Python 3.10 image to keep the size down
+FROM python:3.10-slim
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy ONLY the serving requirements to leverage Docker's cache
+COPY requirements-serve.txt .
+
+# Install the lightweight serving dependencies
+RUN pip install --no-cache-dir -r requirements-serve.txt
+
+# Copy the source code and the necessary data folders
+COPY src/ ./src/
+COPY dist/ ./dist/
+COPY mlruns/ ./mlruns/
+
+# Expose the internal port (Standard is 8000)
+EXPOSE 8000
+
+# Run the server
+CMD ["uvicorn", "src.serve:app", "--host", "0.0.0.0", "--port", "8000"]

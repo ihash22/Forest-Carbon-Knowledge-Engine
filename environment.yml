@@ -1,0 +1,23 @@
+name: carbon_llm_prod
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      # PDF Parsing
+      - pymupdf==1.24.1
+      # Modern LangChain Ecosystem (Unpinned to let pip resolve the latest stable mix)
+      - langchain
+      - langchain-core
+      - langchain-community
+      - langchain-openai
+      - langchain-text-splitters
+      # Vector DB & LLM Client
+      - chromadb
+      - openai
+      # Standard Data Science tools
+      - pandas
+      - python-dotenv
+      - jupyter
