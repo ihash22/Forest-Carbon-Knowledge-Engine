@@ -221,8 +221,10 @@ ray_results/
 # Data and Models
 data/*
 !data/.gitkeep
+mlruns/
 models/*
 !models/.gitkeep
+mlruns.db
 *.csv
 *.parquet
 *.pt
@@ -233,7 +235,6 @@ models/*
 
 # Other Folders ignore
 sandbox_ignore/
-mlruns/
 tests/test_mlruns
 
 # temp ignore
