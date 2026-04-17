@@ -8,7 +8,7 @@ dependencies:
   - pip:
       # PDF Parsing
       - pymupdf==1.24.1
-      # Modern LangChain Ecosystem (Unpinned to let pip resolve the latest stable mix)
+      # Modern LangChain Ecosystem
       - langchain
       - langchain-core
       - langchain-community
@@ -17,6 +17,9 @@ dependencies:
       # Vector DB & LLM Client
       - chromadb
       - openai
+      # LLMOps & Evaluation (🚨 NEWLY ADDED)
+      - mlflow
+      - evidently==0.7.21
       # Standard Data Science tools
       - pandas
       - python-dotenv
