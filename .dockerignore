@@ -1,0 +1,17 @@
+# Ignore heavy raw data and local environments
+data/raw/
+data/processed/
+.env
+.git
+.gitignore
+__pycache__/
+*.pyc
+
+# Ignore local MLOps tracking
+mlruns.db
+mlruns/
+docs/reports/
+
+# Ignore Conda environment folders if they exist locally
+env/
+venv/

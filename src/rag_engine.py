@@ -1,7 +1,13 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-import mlflow # 🚨 NEW IMPORT
+
+# 🚨 NEW: Graceful fallback for Production vs. Local environments
+try:
+    import mlflow
+    MLFLOW_ENABLED = True
+except ImportError:
+    MLFLOW_ENABLED = False
 
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_chroma import Chroma
@@ -15,10 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 CHROMA_DB_DIR = BASE_DIR / "data" / "chroma_db"
 
 def setup_rag_chain():
-    # 🚨 NEW: Enable MLflow Tracing for LangChain
-    mlflow.set_tracking_uri("sqlite:///mlruns.db")
-    mlflow.set_experiment("Forest_Carbon_RAG")
-    mlflow.langchain.autolog()
+    # 🚨 NEW: Only run tracing if MLflow is installed
+    if MLFLOW_ENABLED:
+        mlflow.set_tracking_uri("sqlite:///mlruns.db")
+        mlflow.set_experiment("Forest_Carbon_RAG")
+        mlflow.langchain.autolog()
+    else:
+        print("⚠️ MLflow not detected. Running in Production mode without local tracing.")
 
     print("🔌 Connecting to ChromaDB...")
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
