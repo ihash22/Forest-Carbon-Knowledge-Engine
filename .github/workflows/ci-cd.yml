@@ -1,0 +1,29 @@
+name: Forest Carbon CI/CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run Docker Build Check
+        run: |
+          docker build -t forest-carbon-api:test .
+          echo "✅ Docker build successful!"
+
+      - name: Terraform Format Check
+        run: |
+          cd terraform
+          terraform init -backend=false
+          terraform fmt -check
+          echo "✅ Terraform code is formatted correctly!"
