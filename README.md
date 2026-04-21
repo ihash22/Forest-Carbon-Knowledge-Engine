@@ -95,3 +95,6 @@ This project follows an iterative MLOps lifecycle.
 - [ ] **Phase 2: LLMOps:** Integrate **MLflow** for prompt tracing and **Evidently AI** for faithfulness/hallucination metrics.
 - [ ] **Phase 3: Cloud Native:** Containerize with Docker and deploy to AWS using Terraform (IaC).
 - [ ] **Phase 4: Full Orchestration:** Implement **Apache Airflow** to automatically monitor registries for new filings and trigger re-indexing.
+
+
+temp: test account email update
