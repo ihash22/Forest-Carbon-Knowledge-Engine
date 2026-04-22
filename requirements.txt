@@ -9,3 +9,7 @@ chromadb
 openai
 python-dotenv
 pydantic
+
+# front end framework additions
+streamlit
+requests

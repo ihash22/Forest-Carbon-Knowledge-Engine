@@ -124,3 +124,26 @@ This provisions a dedicated VPC, Public Subnet, ECS Cluster, Fargate Task Defini
 ## 🔮 Future Work
 - **LLM-as-a-Judge:** Upgrading the Evidently AI evaluation suite to grade answers explicitly on *Faithfulness* and *Relevance* to programmatically prevent hallucinations.
 - **Dynamic Document Ingestion:** Adding a POST endpoint to upload, chunk, and vectorize new registry PDFs directly through the API.
+
+## 📺 Demo & How It Works
+
+The RAG engine is accessible via a Streamlit frontend, providing a user-friendly interface to interact with complex registry data.
+
+### What happens when you ask a question?
+1.  **Semantic Retrieval:** The engine converts your natural language query into a vector embedding and searches the **ChromaDB** vector store for the most relevant text chunks from Verra, ACR, or CAR documents.
+2.  **Context Injection:** The system retrieves the top-k matching segments and injects them into a specialized system prompt.
+3.  **Grounded Generation:** GPT-4o-mini processes the context and generates a response. The model is strictly instructed to answer *only* using the provided text.
+4.  **Citation Mapping:** The engine returns the answer along with the specific document names and page numbers used to generate the response, ensuring full auditability.
+
+![alt text](docs/images/frontend.png)
+
+### Example Query
+*“What is baseline scenario of the columbia forestry project?”*
+
+and
+
+*“describe the cobenefits of the sharpbingham project”*
+
+The engine will pinpoint the exact methodology/report section, summarize the requirements (e.g., additionality, baseline setting), and cite the specific PDF source.
+
+![alt text](docs/images/query-example.png)
