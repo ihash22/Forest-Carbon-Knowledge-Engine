@@ -18,10 +18,14 @@ jobs:
 
       - name: Run Docker Build Check
         run: |
-          # 🚨 Create a dummy directory so Docker COPY doesn't crash
+          # Create a dummy directory so Docker COPY doesn't crash
           mkdir -p data/chroma_db
           docker build -t forest-carbon-api:test .
           echo "✅ Docker build successful!"
+
+      # 🚨 NEW: Install Terraform on the GitHub runner
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Format Check
         run: |
