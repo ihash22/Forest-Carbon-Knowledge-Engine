@@ -1,100 +1,126 @@
 # 🌲 Forest Carbon Knowledge Engine
 
-A specialized MLOps pipeline and Vertical RAG (Retrieval-Augmented Generation) system designed to provide high-fidelity, cited answers regarding Forest Carbon Projects using official registry documentation (ACR/Verra).
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688)
+![LangChain](https://img.shields.io/badge/LangChain-Integration-green)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED)
+![Terraform](https://img.shields.io/badge/Terraform-AWS_Fargate-7B42BC)
+![GitHub Actions](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen)
 
-## 🚀 Overview
-General-purpose LLMs often struggle with hyper-specific technicalities, methodology versions, and vintage-year credit counts found in Forest Carbon registries. This project implements a **Vertical RAG** architecture that anchors LLM responses to "Ground Truth" PDF documents, ensuring every answer is accurate and includes a verifiable source citation.
+An AI-powered application designed to retrieve and synthesize complex information from forest carbon registry documents (e.g., Verra, ACR, CAR). This production-grade Retrieval-Augmented Generation (RAG) system allows users to ask natural language questions and receive concise, grounded answers with explicit source citations.
 
-### Key Features
-- **Advanced Document ETL**: Automated parsing and chunking of massive PDF Project Design Documents (PDDs) using `PyMuPDF`.
-- **Semantic Search**: Vectorized knowledge base using OpenAI `text-embedding-3-small` and `ChromaDB`.
-- **Strict Citation Logic**: Engineered system prompts that force the LLM to cite document names and page numbers, reducing hallucination risk.
-- **Production-Ready API**: A FastAPI service designed for containerized deployment and integration with carbon accounting platforms.
+Beyond the core AI, this repository demonstrates **enterprise MLOps and Cloud-Native best practices**, featuring automated prompt tracing, statistical output evaluation, containerization, and Infrastructure as Code (IaC).
 
----
-
-## 🏗️ System Architecture
-1. **Data Ingestion**: Raw ACR/Verra PDFs are placed in the ingestion layer.
-2. **Processing**: Documents are parsed and split using `RecursiveCharacterTextSplitter` to preserve semantic context across chunk boundaries.
-3. **Vectorization**: Chunks are transformed into 1536-dimensional vectors and stored in a local `ChromaDB` instance.
-4. **Retrieval**: User queries trigger a semantic similarity search to fetch the top 5 most relevant context blocks.
-5. **Generation**: GPT-4o-mini synthesizes the final answer based *only* on the retrieved context snippets.
-
----
+## 🚀 Features
+* **Semantic Search:** Quickly find exact methodology rules across tens of thousands of pages.
+* **Source-Grounded AI:** Powered by GPT-4o-mini and constrained strictly to registry context to prevent hallucinations.
+* **REST API:** Built with FastAPI for interactive querying via Swagger UI.
+* **MLOps Observability:** MLflow for prompt tracing and Evidently AI for statistical NLP evaluation.
+* **Cloud-Native Architecture:** Containerized via Docker and deployable as a microservice.
+* **Infrastructure as Code (IaC):** Serverless AWS Fargate deployment blueprint codified with Terraform.
+* **Continuous Integration:** GitHub Actions automatically tests Docker builds and IaC formatting on every push.
 
 ## 🛠️ Tech Stack
-- **Language:** Python 3.10
-- **GenAI Framework:** LangChain (LCEL)
-- **Vector Database:** ChromaDB
-- **LLM/Embeddings:** OpenAI (GPT-4o-mini / text-embedding-3-small)
-- **API Framework:** FastAPI + Uvicorn
-- **Environment Management:** Conda
+* **AI & Data:** LangChain, OpenAI API, ChromaDB (Vector Store), PyMuPDF
+* **Backend API:** FastAPI, Uvicorn, Pydantic
+* **MLOps:** MLflow (Tracing), Evidently AI (Text Evaluation)
+* **DevOps & Cloud:** Docker, Docker Compose, Terraform, AWS (ECS/Fargate), GitHub Actions
 
----
+## 📁 Project Structure
 
-## 📂 Project Structure
 ```text
-Forest-Carbon-Knowledge-Engine/
+├── .github/workflows/
+│   └── ci-cd.yml           # GitHub Actions CI/CD pipeline
 ├── data/
-│   ├── raw/            # Original Registry PDFs (Gitignored)
-│   ├── processed/      # Chunked JSON knowledge base
-│   └── chroma_db/      # Persisted Vector Database
+│   ├── raw/                # Source PDFs (Verra, ACR, CAR)
+│   └── chroma_db/          # Local vector database
+├── docs/reports/           # Evidently AI evaluation dashboards
 ├── src/
-│   ├── parse_registry_docs.py   # PDF ETL Pipeline
-│   ├── build_vector_db.py       # Embedding & Indexing logic
-│   ├── rag_engine.py            # LangChain Retrieval & Prompt logic
-│   └── api.py                   # FastAPI implementation
-├── environment.yml              # Conda environment definition
-└── .env                         # API Keys (Gitignored)
+│   ├── api.py              # FastAPI application entry point
+│   ├── build_vector_db.py  # Document ingestion & embedding script
+│   ├── rag_engine.py       # LangChain pipeline w/ optional MLflow tracing
+│   └── evaluate_rag.py     # Evidently AI test suite
+├── terraform/
+│   └── main.tf             # AWS infrastructure blueprint
+├── .dockerignore           # Container build exclusions
+├── .env                    # Environment variables (Git-ignored)
+├── docker-compose.yml      # Local container orchestration
+├── Dockerfile              # API container definition
+├── requirements.txt        # Production API dependencies
+└── README.md
 ```
 
----
+## ⚙️ Setup Instructions
 
-## ⚡ Quick Start
+### Prerequisites
+- Python 3.10+
+- Docker Desktop
+- Terraform CLI & AWS CLI (for infrastructure deployment)
+- OpenAI API Key
 
-### 1. Clone & Setup
+### 1. Clone the repository
 ```bash
-git clone [https://github.com/YOUR_USERNAME/Forest-Carbon-Knowledge-Engine.git](https://github.com/YOUR_USERNAME/Forest-Carbon-Knowledge-Engine.git)
-cd Forest-Carbon-Knowledge-Engine
-conda env create -f environment.yml
-conda activate carbon_llm_prod
+git clone [https://github.com/yourusername/forest-carbon-knowledge-engine.git](https://github.com/yourusername/forest-carbon-knowledge-engine.git)
+cd forest-carbon-knowledge-engine
 ```
 
-### 2. Configure Secrets
+### 2. Set up environment variables
 Create a `.env` file in the root directory:
-```text
-OPENAI_API_KEY=your_api_key_here
+```bash
+touch .env
+```
+Add your OpenAI key to the `.env` file:
+```env
+OPENAI_API_KEY="sk-your-openai-api-key"
 ```
 
-### 3. Initialize Knowledge Base
-Drop your ACR/Verra PDFs into `data/raw/`, then run the pipeline:
+### 3. Run the API (Choose one method)
+
+**Method A: Production Mode (Docker)** Run the fully isolated, cloud-ready container. *Note: MLflow tracing is gracefully disabled in Docker to keep the container lightweight.*
 ```bash
-python src/parse_registry_docs.py
-python src/build_vector_db.py
+docker-compose up --build
 ```
 
-### 4. Launch the API
+**Method B: Development Mode (Local/Conda)** Run locally with full MLflow tracking and evaluation tools.
 ```bash
+# Create and activate environment
+conda create -n carbon_llm_prod python=3.10
+conda activate carbon_llm_prod
+
+# Install all dependencies (including dev tools)
+pip install -r requirements.txt
+pip install mlflow evidently jupyter
+
+# Launch the FastAPI server
 uvicorn src.api:app --reload
 ```
-Access the interactive documentation at `http://localhost:8000/docs`.
+
+Once running, access the interactive API interface at: **[http://localhost:8000/docs](http://localhost:8000/docs)**
 
 ---
 
-## 📝 Example Query
-**Input:** *"What is the baseline scenario for the Sharp Bingham project?"*
+## 📊 Evaluation & MLOps
 
-**Output:**
-> "The baseline for the Sharp Bingham project includes stricter management regimes than state practices, maximizing Net Present Value (NPV) at a 4% discount rate. It also explicitly prohibits harvesting within specific riparian buffer zones to ensure carbon stock maintenance. **[Source: SharpBingham_GHG_Plan.pdf, Page 21]**"
+This engine includes an automated suite to monitor the health and behavior of the LLM outputs.
 
----
+To run the evaluation pipeline:
+```bash
+python -m src.evaluate_rag
+```
+This queries the RAG engine against a golden dataset, extracts the results, and compiles an interactive HTML dashboard using **Evidently AI** (saved to `docs/reports/rag_evaluation_report.html`). It tracks response length, generation failures, and acts as a proxy for answer toxicity/sentiment.
 
-## 🗺️ Roadmap & MLOps Maturity
-This project follows an iterative MLOps lifecycle. 
-- [x] **Phase 1: Knowledge Engine:** Basic RAG, PDF ETL, and FastAPI integration.
-- [ ] **Phase 2: LLMOps:** Integrate **MLflow** for prompt tracing and **Evidently AI** for faithfulness/hallucination metrics.
-- [ ] **Phase 3: Cloud Native:** Containerize with Docker and deploy to AWS using Terraform (IaC).
-- [ ] **Phase 4: Full Orchestration:** Implement **Apache Airflow** to automatically monitor registries for new filings and trigger re-indexing.
+## ☁️ Infrastructure as Code (IaC)
 
+The application infrastructure is codified using Terraform, targeting AWS Fargate for serverless container hosting. 
 
-temp: test account email update
+To preview the cloud infrastructure blueprint:
+```bash
+cd terraform
+terraform init
+terraform plan
+```
+This provisions a dedicated VPC, Public Subnet, ECS Cluster, Fargate Task Definitions, and Security Groups required to host the Dockerized API securely.
+
+## 🔮 Future Work
+- **LLM-as-a-Judge:** Upgrading the Evidently AI evaluation suite to grade answers explicitly on *Faithfulness* and *Relevance* to programmatically prevent hallucinations.
+- **Dynamic Document Ingestion:** Adding a POST endpoint to upload, chunk, and vectorize new registry PDFs directly through the API.
