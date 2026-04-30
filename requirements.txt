@@ -7,8 +7,10 @@ langchain-openai
 langchain-chroma
 chromadb
 openai
+prefect
 python-dotenv
 pydantic
+
 
 # front end framework additions
 streamlit
